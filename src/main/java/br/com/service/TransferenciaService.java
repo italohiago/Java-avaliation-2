@@ -55,42 +55,42 @@ public class TransferenciaService {
         return transferenciaRepository.findByContaIdAndDataTransferenciaBetweenAndNomeOperadorTransacao(
                 numeroConta, dataInicial, dataFinal, nomeOperador
         );
+    }
 
-        // Método para buscar todas as transferências
-        public List<Transferencia> buscarTodasTransferencias() {
-            return transferenciaRepository.findAll();
-        }
+    // Método para buscar todas as transferências
+    public List<Transferencia> buscarTodasTransferencias() {
+        return transferenciaRepository.findAll();
+    }
 
-        // Método para calcular o saldo total da conta
-        public Double calcularSaldoTotalConta(Long numeroConta) {
-            List<Transferencia> transferencias = transferenciaRepository.findByContaId(numeroConta);
-            Double saldoTotal = 0.0;
+    // Método para calcular o saldo total da conta
+    public Double calcularSaldoTotalConta(Long numeroConta) {
+        List<Transferencia> transferencias = transferenciaRepository.findByContaId(numeroConta);
+        Double saldoTotal = 0.0;
 
-            for (Transferencia transferencia : transferencias) {
-                if (transferencia.getTipo().equals("DEPOSITO") || transferencia.getTipo().equals("TRANSFERENCIA")) {
-                    saldoTotal += transferencia.getValor();
-                } else {
-                    saldoTotal -= transferencia.getValor();
-                }
+        for (Transferencia transferencia : transferencias) {
+            if (transferencia.getTipo().equals("DEPOSITO") || transferencia.getTipo().equals("TRANSFERENCIA")) {
+                saldoTotal += transferencia.getValor();
+            } else {
+                saldoTotal -= transferencia.getValor();
             }
-
-            return Math.round(saldoTotal * 100.0) / 100.0; // Arredonda para 2 casas decimais
         }
 
-        // Método para calcular o saldo total da conta no período
-        public Double calcularSaldoTotalContaNoPeriodo(Long numeroConta, LocalDateTime dataInicial, LocalDateTime dataFinal) {
-            List<Transferencia> transferencias = transferenciaRepository.findByContaIdAndDataTransferenciaBetween(numeroConta, dataInicial, dataFinal);
-            Double saldoTotalNoPeriodo = 0.0;
+        return Math.round(saldoTotal * 100.0) / 100.0; // Arredonda para 2 casas decimais
+    }
 
-            for (Transferencia transferencia : transferencias) {
-                if (transferencia.getTipo().equals("DEPOSITO") || transferencia.getTipo().equals("TRANSFERENCIA")) {
-                    saldoTotalNoPeriodo += transferencia.getValor();
-                } else {
-                    saldoTotalNoPeriodo -= transferencia.getValor();
-                }
+    // Método para calcular o saldo total da conta no período
+    public Double calcularSaldoTotalContaNoPeriodo(Long numeroConta, LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        List<Transferencia> transferencias = transferenciaRepository.findByContaIdAndDataTransferenciaBetween(numeroConta, dataInicial, dataFinal);
+        Double saldoTotalNoPeriodo = 0.0;
+
+        for (Transferencia transferencia : transferencias) {
+            if (transferencia.getTipo().equals("DEPOSITO") || transferencia.getTipo().equals("TRANSFERENCIA")) {
+                saldoTotalNoPeriodo += transferencia.getValor();
+            } else {
+                saldoTotalNoPeriodo -= transferencia.getValor();
             }
-
-            return Math.round(saldoTotalNoPeriodo * 100.0) / 100.0; // Arredonda para 2 casas decimais
         }
+
+        return Math.round(saldoTotalNoPeriodo * 100.0) / 100.0; // Arredonda para 2 casas decimais
     }
 }
