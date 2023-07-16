@@ -18,4 +18,8 @@ public interface TransferenciaRepository extends JpaRepository<Transferencia, Lo
             Long contaId, LocalDateTime dataInicial, LocalDateTime dataFinal, String nomeOperadorTransacao
     );
 
+    // Método para buscar transferências de uma conta em um período de tempo
+    @Query("SELECT t FROM Transferencia t WHERE t.conta.id = :numeroConta AND t.dataTransferencia BETWEEN :dataInicial AND :dataFinal")
+    List<Transferencia> findByContaIdAndDataTransferenciaBetween(Long numeroConta, LocalDateTime dataInicial, LocalDateTime dataFinal);
+
 }
