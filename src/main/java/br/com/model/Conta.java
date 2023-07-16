@@ -1,7 +1,7 @@
 package br.com.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -11,22 +11,22 @@ public class Conta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_conta")
-    private Long idConta;
+    private Long id;
 
-    @Column(name = "nome_responsavel", nullable = false)
+    @Column(name = "nome_responsavel")
     private String nomeResponsavel;
 
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Transferencia> transferencias;
 
-    // Getters, Setters e Construtores
+    // Getters and Setters
 
-    public Long getIdConta() {
-        return idConta;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdConta(Long idConta) {
-        this.idConta = idConta;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNomeResponsavel() {
@@ -45,13 +45,20 @@ public class Conta {
         this.transferencias = transferencias;
     }
 
-    // Construtores
+    // Método para calcular o saldo total da conta
+    public BigDecimal getSaldoTotal() {
+        BigDecimal saldoTotal = BigDecimal.ZERO;
 
-    public Conta() {
-        // Construtor padrão vazio necessário para JPA
-    }
+        if (transferencias != null) {
+            for (Transferencia transferencia : transferencias) {
+                if (transferencia.getTipo().equals("DEPOSITO") || transferencia.getTipo().equals("TRANSFERENCIA")) {
+                    saldoTotal = saldoTotal.add(transferencia.getValor());
+                } else {
+                    saldoTotal = saldoTotal.subtract(transferencia.getValor());
+                }
+            }
+        }
 
-    public Conta(String nomeResponsavel) {
-        this.nomeResponsavel = nomeResponsavel;
+        return saldoTotal;
     }
 }

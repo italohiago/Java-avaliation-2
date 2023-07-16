@@ -9,4 +9,7 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
 
     Optional<Conta> findByNomeResponsavel(String nomeResponsavel);
 
+    // Método para buscar a conta pelo número da conta
+    Conta findByNumeroConta(Long numeroConta);
+
 }

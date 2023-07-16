@@ -5,6 +5,8 @@ import br.com.repository.TransferenciaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -63,34 +65,34 @@ public class TransferenciaService {
     }
 
     // Método para calcular o saldo total da conta
-    public Double calcularSaldoTotalConta(Long numeroConta) {
+    public BigDecimal calcularSaldoTotalConta(Long numeroConta) {
         List<Transferencia> transferencias = transferenciaRepository.findByContaId(numeroConta);
-        Double saldoTotal = 0.0;
+        BigDecimal saldoTotal = BigDecimal.ZERO;
 
         for (Transferencia transferencia : transferencias) {
             if (transferencia.getTipo().equals("DEPOSITO") || transferencia.getTipo().equals("TRANSFERENCIA")) {
-                saldoTotal += transferencia.getValor();
+                saldoTotal = saldoTotal.add(transferencia.getValor());
             } else {
-                saldoTotal -= transferencia.getValor();
+                saldoTotal = saldoTotal.subtract(transferencia.getValor());
             }
         }
 
-        return Math.round(saldoTotal * 100.0) / 100.0; // Arredonda para 2 casas decimais
+        return saldoTotal.setScale(2, RoundingMode.HALF_EVEN);
     }
 
     // Método para calcular o saldo total da conta no período
-    public Double calcularSaldoTotalContaNoPeriodo(Long numeroConta, LocalDateTime dataInicial, LocalDateTime dataFinal) {
+    public BigDecimal calcularSaldoTotalContaNoPeriodo(Long numeroConta, LocalDateTime dataInicial, LocalDateTime dataFinal) {
         List<Transferencia> transferencias = transferenciaRepository.findByContaIdAndDataTransferenciaBetween(numeroConta, dataInicial, dataFinal);
-        Double saldoTotalNoPeriodo = 0.0;
+        BigDecimal saldoTotalNoPeriodo = BigDecimal.ZERO;
 
         for (Transferencia transferencia : transferencias) {
             if (transferencia.getTipo().equals("DEPOSITO") || transferencia.getTipo().equals("TRANSFERENCIA")) {
-                saldoTotalNoPeriodo += transferencia.getValor();
+                saldoTotalNoPeriodo = saldoTotalNoPeriodo.add(transferencia.getValor());
             } else {
-                saldoTotalNoPeriodo -= transferencia.getValor();
+                saldoTotalNoPeriodo = saldoTotalNoPeriodo.subtract(transferencia.getValor());
             }
         }
 
-        return Math.round(saldoTotalNoPeriodo * 100.0) / 100.0; // Arredonda para 2 casas decimais
+        return saldoTotalNoPeriodo.setScale(2, RoundingMode.HALF_EVEN);
     }
 }

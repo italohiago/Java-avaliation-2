@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,19 +42,19 @@ public class TransferenciaController {
 
     // Rota para buscar o saldo total de uma conta
     @GetMapping("/saldo/{numeroConta}")
-    public ResponseEntity<Double> calcularSaldoTotalConta(@PathVariable Long numeroConta) {
-        Double saldoTotal = transferenciaService.calcularSaldoTotalConta(numeroConta);
+    public ResponseEntity<BigDecimal> calcularSaldoTotalConta(@PathVariable Long numeroConta) {
+        BigDecimal saldoTotal = transferenciaService.calcularSaldoTotalConta(numeroConta);
         return ResponseEntity.ok(saldoTotal);
     }
 
     // Rota para buscar o saldo total de uma conta no período
     @GetMapping("/saldo/{numeroConta}/periodo")
-    public ResponseEntity<Double> calcularSaldoTotalContaNoPeriodo(
+    public ResponseEntity<BigDecimal> calcularSaldoTotalContaNoPeriodo(
             @PathVariable Long numeroConta,
             @RequestParam(required = false) LocalDateTime dataInicial,
             @RequestParam(required = false) LocalDateTime dataFinal
     ) {
-        Double saldoTotalNoPeriodo = transferenciaService.calcularSaldoTotalContaNoPeriodo(numeroConta, dataInicial, dataFinal);
+        BigDecimal saldoTotalNoPeriodo = transferenciaService.calcularSaldoTotalContaNoPeriodo(numeroConta, dataInicial, dataFinal);
         return ResponseEntity.ok(saldoTotalNoPeriodo);
     }
 }
